@@ -1,0 +1,46 @@
+.note-list{
+    flex-direction: column;
+    background: rgb(28,27,29);
+    margin-left: 5%;
+    margin-right: 5%;
+    border-radius: 8px;
+}
+#new-note-item{
+	background-color: unset;
+	width: 90%;
+	height: 85%;
+    margin-top: 20px;
+    border: none;
+    color: white;
+    font-size: 25px;
+    border-radius: 5px;
+    padding: 10px;
+    font-family: inherit;
+}
+#new-note-item:focus {
+    outline: none;
+}
+
+#add-note-button{
+    float: right;
+    display: flex;
+    margin-right: 45px;
+    background-color: unset;
+    color: rgb(227, 177, 60);
+    font-size: 25px;
+    justify-content: space-between;
+    align-items: center;
+}
+#add-note-button:hover{
+    color: rgba(227, 177, 60, 0.6);
+}
+.bottom-nav{
+    position: absolute;
+    bottom: 40px;
+    width: 100vw;
+}
+@media only screen and (min-width: 600px) {
+	.bottom-nav{
+		width: 60vw;
+	}
+}
