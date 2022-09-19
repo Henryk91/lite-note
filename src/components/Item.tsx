@@ -2,24 +2,26 @@ import React, { useState } from "react";
 import "./item.css";
 import useItem from "../store/item";
 import useSelectedFolder from "../store/selectedFolder";
+import { NoteItem } from "../types/item";
+
 
 function Item() {
     const { items, addItem, updateNoteItem } = useItem.useContainer();
-    let { selectedFolder, selectFolder } = useSelectedFolder.useContainer();
+    let { selectedFolder, deSelectFolder } = useSelectedFolder.useContainer();
     const [localItem, setLocalItem] = useState("");
     const [showAddNote, setShowAddNote] = useState(false);
-    const [updatingNote, setUpdatingNote] = useState({});
-    if (selectedFolder.id === undefined) {
+    const [updatingNote, setUpdatingNote] = useState<NoteItem>();
+    if (!selectedFolder || !selectedFolder.id) {
         return (<></>)
     }
     let folderItems = items.filter(item => item.parentId === selectedFolder.id)
 
-    const addNewItem = (localItem, parentId) => {
-        if (updatingNote.id !== undefined) {
-            let item = { ...updatingNote }
+    const addNewItem = (localItem: string, parentId: string) => {
+        if (updatingNote && updatingNote.id !== undefined) {
+            let item: NoteItem = { ...updatingNote } as NoteItem
             item.content = localItem
             updateNoteItem(item)
-            setUpdatingNote({})
+            setUpdatingNote(undefined)
         } else {
             addItem(localItem, parentId)
         }
@@ -27,7 +29,7 @@ function Item() {
         setLocalItem('')
     }
 
-    const updateItem = (item) => {
+    const updateItem = (item: NoteItem) => {
         setLocalItem(item.content)
         setShowAddNote(!showAddNote)
         setUpdatingNote(item)
@@ -43,7 +45,7 @@ function Item() {
                     id="edit-nav-button"
                     value="< Folders"
                     onClick={() => {
-                        selectFolder({})
+                        deSelectFolder()
                     }}
                 />
             </div>
@@ -72,7 +74,6 @@ function Item() {
                 </div>
                 <textarea
                     autoFocus
-                    type="textarea"
                     id="new-note-item"
                     placeholder="New Note"
                     value={localItem}

@@ -10,7 +10,7 @@ function Folder() {
     const [showAddFolder, setShowAddFolder] = useState(false);
     const [showEditButton, setShowEditButton] = useState(false);
 
-    if (selectedFolder.id !== undefined) {
+    if (selectedFolder && selectedFolder.id !== undefined) {
         return (<></>)
     }
     return (
@@ -39,7 +39,6 @@ function Folder() {
                     items.map((item) => (
                         <div className="item-set padding-set" key={item.id + item.name}>
                             <div className="item-name-box" onClick={() => selectFolder(item)}>
-                                {/* <span className="folder-icon"></span> */}
                                 <i  className="far fa-folder folder-icon" aria-hidden="true"></i>
                                 <li className="item" >
                                     {item.name}{" "}
