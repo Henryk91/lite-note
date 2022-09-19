@@ -13,7 +13,6 @@ function useItem(initialState = []) {
     let updateNoteItem = (_item) => {
         const itemIndex = items.findIndex(item => item.id === _item.id)
         let newItems = [...items]
-        console.log('newItems',newItems);
         newItems[itemIndex] = _item
         setItem(newItems); 
     };
