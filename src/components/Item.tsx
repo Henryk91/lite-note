@@ -88,7 +88,7 @@ function Item() {
                 {folderItems.length > 0 &&
                     folderItems.map((item) => (
                         <div className="item-set" key={item.id + item.parentId} onClick={() => updateItem(item)}>
-                            <p style={{ marginRight: 12 }}>
+                            <p className="note-item" style={{ marginRight: 12 }}>
                                 {item.content}
                             </p>
                         </div>

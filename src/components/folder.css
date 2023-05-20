@@ -4,6 +4,12 @@
     text-align: left;
     justify-content: center;
 }
+body {
+    height: 100%;
+    position: absolute;
+    margin: 0;
+	background: rgb(0,0,0);
+}
 #title{
 	padding-inline-start: 40px;
 }
@@ -12,20 +18,27 @@
 	height: 100vh;
 	border: 1px solid black;
 	background: rgb(0,0,0);
-}
-#add-folder-button{
-	position: absolute;
-    bottom: 50px;
+	overflow: hidden;
     display: flex;
-    margin-left: 65px;
-    border: unset;
-    background-color: unset;
-    color: rgb(227, 177, 60);
+    flex-direction: column;
+}
+.items-wrap{
+	overflow: scroll;
+}
+.section{
+	flex: 1;
+  overflow-x: auto;
+}
+
+#add-folder-button{
     font-size: 25px;
     justify-content: space-evenly;
     display: flex;
     align-items: center;
     width: 60px;
+    background: none;
+    margin: 20px;
+    color: rgb(227, 177, 60);
 }
 #add-folder-button:hover{
     color: rgba(227, 177, 60, 0.6);
