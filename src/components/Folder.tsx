@@ -41,10 +41,12 @@ function Folder() {
           <i className="far fa-folder" aria-hidden="true"></i>
           <span>+</span>
         </div>
-        <div id="add-note-button" onClick={() => setShowAddNote(!showAddNote)}>
-          <i className="far fa-sticky-note" aria-hidden="true"></i>
-          <span>+</span>
-        </div>
+        {selectedFolder ? (
+          <div id="add-note-button" onClick={() => setShowAddNote(!showAddNote)}>
+            <i className="far fa-sticky-note" aria-hidden="true"></i>
+            <span>+</span>
+          </div>
+        ) : null}
       </footer>
     </div>
   );
