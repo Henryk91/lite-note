@@ -1,6 +1,5 @@
 import './App.css';
 import Folder from "./components/Folder";
-import Item from "./components/Item";
 import Provider from "./store/provider";
 
 function App() {
@@ -8,7 +7,6 @@ function App() {
     <div className="App">
       <Provider>  
           <Folder />
-          <Item />
       </Provider>
     </div>
   );

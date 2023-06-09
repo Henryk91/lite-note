@@ -15,14 +15,16 @@ function FolderList({
   let { items, addItem, deleteItem } = useFolder.useContainer();
   let { selectedFolder, selectFolder } = useSelectedFolder.useContainer();
   const [localItem, setLocalItem] = useState("");
-
+  const folderItems = items?.filter((item) => {
+    return item?.parent === (selectedFolder ? selectedFolder.name : "");
+  });
   return (
     <section className="section">
       <h1 className="title">{selectedFolder ? selectedFolder.name : "Folder Items"}</h1>
       <div className="items-wrap">
         <ol className="items">
-          {items.length > 0 ? (
-            items.map((item) => (
+          {folderItems.length > 0 ? (
+            folderItems.map((item) => (
               <div className="item-set padding-set" key={item.id + item.name}>
                 <div className="item-name-box" onClick={() => selectFolder(item)}>
                   <i className="far fa-folder folder-icon" aria-hidden="true"></i>
@@ -59,7 +61,7 @@ function FolderList({
               id="done-button"
               value="Done"
               onClick={() => {
-                addItem(localItem);
+                addItem({ name: localItem, parent: selectedFolder ? selectedFolder.name : "" });
                 setLocalItem("");
                 setShowAddFolder(!showAddFolder);
               }}
