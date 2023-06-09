@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { createContainer } from "unstated-next";
-import { Folder } from "../types/folder";
+import { FolderType } from "../types/folder";
   
 function useSelectedFolder(initialState: any) {
-    let [selectedFolder, setSelectedFolder] = useState<Folder>(initialState);
-    let selectFolder = (_selectedFolder: Folder) => {
+    let [selectedFolder, setSelectedFolder] = useState<FolderType>(initialState);
+    let selectFolder = (_selectedFolder: FolderType) => {
         setSelectedFolder(_selectedFolder);
     };
     let deSelectFolder = () => {

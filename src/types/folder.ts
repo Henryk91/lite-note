@@ -1,6 +1,6 @@
-type Folder = {
+type FolderType = {
     id: string, 
     name: string
 }
 
-export type {Folder}
+export type {FolderType}
