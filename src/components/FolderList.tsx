@@ -19,7 +19,7 @@ function FolderList({
     return item?.parent === (selectedFolder ? selectedFolder.name : "");
   });
   return (
-    <section className="section">
+    <>
       <h1 className="title">{selectedFolder ? selectedFolder.name : "Folder Items"}</h1>
       <div className="items-wrap">
         <ol className="items">
@@ -77,7 +77,7 @@ function FolderList({
           />
         </div>
       )}
-    </section>
+    </>
   );
 }
 

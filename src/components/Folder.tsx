@@ -34,8 +34,10 @@ function Folder() {
           }}
         />
       </div>
-      <FolderList showEditButton={showEditButton} showAddFolder={showAddFolder} setShowAddFolder={setShowAddFolder} />
-      <Item showAddNote={showAddNote} setShowAddNote={setShowAddNote} />
+      <section className="section">
+        <FolderList showEditButton={showEditButton} showAddFolder={showAddFolder} setShowAddFolder={setShowAddFolder} />
+        <Item showAddNote={showAddNote} setShowAddNote={setShowAddNote} />
+      </section>
       <footer className="folder-nav">
         <div id="add-folder-button" onClick={() => setShowAddFolder(!showAddFolder)}>
           <i className="far fa-folder" aria-hidden="true"></i>
