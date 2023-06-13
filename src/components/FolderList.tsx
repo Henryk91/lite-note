@@ -12,12 +12,11 @@ function FolderList({
   showAddFolder: boolean;
   setShowAddFolder: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  let { items, addItem, deleteItem } = useFolder.useContainer();
+  let { addItem, deleteItem, getFoldersByParentId } = useFolder.useContainer();
   let { selectedFolder, selectFolder } = useSelectedFolder.useContainer();
   const [localItem, setLocalItem] = useState("");
-  const folderItems = items?.filter((item) => {
-    return item?.parent === (selectedFolder ? selectedFolder.name : "");
-  });
+  const folderItems = getFoldersByParentId(selectedFolder ? selectedFolder.id : "")
+
   return (
     <>
       <h1 className="title">{selectedFolder ? selectedFolder.name : "Folder Items"}</h1>
@@ -61,7 +60,7 @@ function FolderList({
               id="done-button"
               value="Done"
               onClick={() => {
-                addItem({ name: localItem, parent: selectedFolder ? selectedFolder.name : "" });
+                addItem({ name: localItem, parent: selectedFolder ? selectedFolder.id : "" });
                 setLocalItem("");
                 setShowAddFolder(!showAddFolder);
               }}

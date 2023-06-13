@@ -24,7 +24,11 @@ function useItem(initialState = []) {
     let newItems: NoteItem[] = items.filter((item) => item !== _item);
     setItem(newItems);
   };
-  return { items, addItem, updateNoteItem, deleteItem };
+  let getItemsByParent = (parentId: string) => {
+    return items?.filter((item) => item?.parentId === parentId);
+  };
+
+  return { items, addItem, updateNoteItem, deleteItem, getItemsByParent };
 }
 
 export default createContainer(useItem);

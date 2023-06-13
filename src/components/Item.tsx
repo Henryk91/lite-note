@@ -11,12 +11,12 @@ function Item({
   showAddNote: boolean;
   setShowAddNote: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { items, addItem, updateNoteItem } = useItem.useContainer();
+  const { addItem, updateNoteItem, getItemsByParent } = useItem.useContainer();
   let { selectedFolder } = useSelectedFolder.useContainer();
   const [localItem, setLocalItem] = useState("");
   const [updatingNote, setUpdatingNote] = useState<NoteItem>();
-
-  let folderItems = items?.filter((item) => item?.parentId === (selectedFolder ? selectedFolder.id : ""));
+  
+  let folderItems = getItemsByParent(selectedFolder?.id);
 
   const addNewItem = (localItem: string, parentId: string) => {
     if (updatingNote && updatingNote.id !== undefined) {

@@ -13,7 +13,10 @@ function useFolder(initialState = []) {
     let newItem: FolderType[] = items.filter((item) => item !== _item);
     setItems(newItem);
   };
-  return { items, addItem, deleteItem };
+  let getFoldersByParentId = (parentId: string) => {
+    return items?.filter((item) => item?.parent === parentId);
+  };
+  return { items, addItem, deleteItem, getFoldersByParentId };
 }
 
 export default createContainer(useFolder);
