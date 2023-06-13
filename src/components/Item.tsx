@@ -5,17 +5,19 @@ import useSelectedFolder from "../store/selectedFolder";
 import { NoteItem } from "../types/item";
 
 function Item({
+  showEditButton,
   showAddNote,
   setShowAddNote,
 }: {
+  showEditButton: boolean;
   showAddNote: boolean;
   setShowAddNote: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { addItem, updateNoteItem, getItemsByParent } = useItem.useContainer();
+  const { addItem, updateNoteItem, deleteItem, getItemsByParent } = useItem.useContainer();
   let { selectedFolder } = useSelectedFolder.useContainer();
   const [localItem, setLocalItem] = useState("");
   const [updatingNote, setUpdatingNote] = useState<NoteItem>();
-  
+
   let folderItems = getItemsByParent(selectedFolder?.id);
 
   const addNewItem = (localItem: string, parentId: string) => {
@@ -32,7 +34,7 @@ function Item({
   };
 
   const updateItem = (item: NoteItem) => {
-    if(item.content){
+    if (item.content) {
       setLocalItem(item.content);
       setShowAddNote(!showAddNote);
       setUpdatingNote(item);
@@ -76,10 +78,15 @@ function Item({
       <div className="note-list">
         {folderItems.length > 0 &&
           folderItems.map((item) => (
-            <div className="item-set" key={item.id + item.parentId} onClick={() => updateItem(item)}>
-              <p className="note-item" style={{ marginRight: 12 }}>
-                {item.content}
-              </p>
+            <div className="item-set" key={item.id + item.parentId}>
+              <div onClick={() => updateItem(item)}>
+                <p>{item.content} </p>
+              </div>
+              {showEditButton && (
+                <button className="deleteButton" onClick={() => deleteItem(item)}>
+                  Delete
+                </button>
+              )}
             </div>
           ))}
       </div>

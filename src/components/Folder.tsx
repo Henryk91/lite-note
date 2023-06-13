@@ -36,7 +36,7 @@ function Folder() {
       </div>
       <section className="section">
         <FolderList showEditButton={showEditButton} showAddFolder={showAddFolder} setShowAddFolder={setShowAddFolder} />
-        <Item showAddNote={showAddNote} setShowAddNote={setShowAddNote} />
+        <Item showEditButton={showEditButton} showAddNote={showAddNote} setShowAddNote={setShowAddNote} />
       </section>
       <footer className="folder-nav">
         <div id="add-folder-button" onClick={() => setShowAddFolder(!showAddFolder)}>
