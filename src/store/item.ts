@@ -6,7 +6,12 @@ function useItem(initialState = []) {
   let [items, setItem] = useState<NoteItem[]>(initialState);
   let addItem = (_item: string, _parentId: string) => {
     if (_item === "") return;
-    let newItem: NoteItem = { id: items.length, content: _item, parentId: _parentId };
+    let newItem: NoteItem = { id: items.length.toString(), content: _item, parentId: _parentId, type: "NOTE" };
+    setItem([...items, newItem]);
+  };
+  let addFolder = (_item: { name: string; parent: string }) => {
+    if (_item.name === "") return;
+    let newItem: NoteItem = { id: items.length.toString(), name: _item.name, parentId: _item.parent, type: "FOLDER" };
     setItem([...items, newItem]);
   };
   let updateNoteItem = (_item: NoteItem) => {
@@ -25,10 +30,12 @@ function useItem(initialState = []) {
     setItem(newItems);
   };
   let getItemsByParent = (parentId: string) => {
-    return items?.filter((item) => item?.parentId === parentId);
+    return items?.filter((item) => item?.parentId === parentId && item.type === "NOTE");
   };
-
-  return { items, addItem, updateNoteItem, deleteItem, getItemsByParent };
+  let getFoldersByParentId = (parentId: string) => {
+    return items?.filter((item) => item?.parentId === parentId && item.type === "FOLDER");
+  };
+  return { items, addItem,addFolder, updateNoteItem, deleteItem, getItemsByParent, getFoldersByParentId };
 }
 
 export default createContainer(useItem);

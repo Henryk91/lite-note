@@ -32,9 +32,11 @@ function Item({
   };
 
   const updateItem = (item: NoteItem) => {
-    setLocalItem(item.content);
-    setShowAddNote(!showAddNote);
-    setUpdatingNote(item);
+    if(item.content){
+      setLocalItem(item.content);
+      setShowAddNote(!showAddNote);
+      setUpdatingNote(item);
+    }
   };
 
   return (

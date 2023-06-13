@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./folder.css";
-import useFolder from "../store/folder";
+import useItem from "../store/item";
 import useSelectedFolder from "../store/selectedFolder";
 
 function FolderList({
@@ -12,7 +12,7 @@ function FolderList({
   showAddFolder: boolean;
   setShowAddFolder: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  let { addItem, deleteItem, getFoldersByParentId } = useFolder.useContainer();
+  const { addFolder, deleteItem, getFoldersByParentId } = useItem.useContainer();
   let { selectedFolder, selectFolder } = useSelectedFolder.useContainer();
   const [localItem, setLocalItem] = useState("");
   const folderItems = getFoldersByParentId(selectedFolder ? selectedFolder.id : "")
@@ -24,7 +24,7 @@ function FolderList({
         <ol className="items">
           {folderItems.length > 0 ? (
             folderItems.map((item) => (
-              <div className="item-set padding-set" key={item.id + item.name}>
+              <div className="item-set padding-set" key={item.id + (item && item?.name? item.name: "")}>
                 <div className="item-name-box" onClick={() => selectFolder(item)}>
                   <i className="far fa-folder folder-icon" aria-hidden="true"></i>
                   <li className="item">{item.name} </li>
@@ -60,7 +60,7 @@ function FolderList({
               id="done-button"
               value="Done"
               onClick={() => {
-                addItem({ name: localItem, parent: selectedFolder ? selectedFolder.id : "" });
+                addFolder({ name: localItem, parent: selectedFolder ? selectedFolder.id : "" });
                 setLocalItem("");
                 setShowAddFolder(!showAddFolder);
               }}

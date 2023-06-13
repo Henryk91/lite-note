@@ -1,6 +1,8 @@
 type NoteItem = {
-    id: string | number,
-    content: string,
+    id: string
+    type: "FOLDER" | "NOTE"
+    name?: string,
+    content?: string,
     parentId: string,
 }
 

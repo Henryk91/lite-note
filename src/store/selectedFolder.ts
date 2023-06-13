@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { createContainer } from "unstated-next";
-import { FolderType } from "../types/folder";
+import { NoteItem } from "../types/item";
   
 function useSelectedFolder(initialState: any) {
-    let [selectedFolder, setSelectedFolder] = useState<FolderType>(initialState);
-    let [previousSelectedFolders, setPreviousSelectedFolders] = useState<FolderType[]>(initialState);
-    let selectFolder = (_selectedFolder: FolderType) => {
+    let [selectedFolder, setSelectedFolder] = useState<NoteItem>(initialState);
+    let [previousSelectedFolders, setPreviousSelectedFolders] = useState<NoteItem[]>(initialState);
+    let selectFolder = (_selectedFolder: NoteItem) => {
         if(selectedFolder){
             setPreviousSelectedFolders(previousSelectedFolders? [...previousSelectedFolders, selectedFolder]: [selectedFolder])
         }
