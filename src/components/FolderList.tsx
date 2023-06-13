@@ -15,8 +15,8 @@ function FolderList({
   const { addFolder, deleteItem, getFoldersByParentId, checkFolderHasItems } = useItem.useContainer();
   let { selectedFolder, selectFolder } = useSelectedFolder.useContainer();
   const [localItem, setLocalItem] = useState("");
-  const folderItems = getFoldersByParentId(selectedFolder ? selectedFolder.id : "")
-  const folderHasItems = checkFolderHasItems(selectedFolder ? selectedFolder.id : "")
+  const folderItems = getFoldersByParentId(selectedFolder ? selectedFolder.id : "");
+  const folderHasItems = checkFolderHasItems(selectedFolder ? selectedFolder.id : "");
 
   return (
     <>
@@ -25,7 +25,7 @@ function FolderList({
         <ol className="items">
           {folderItems.length > 0 ? (
             folderItems.map((item) => (
-              <div className="item-set padding-set" key={item.id + (item && item?.name? item.name: "")}>
+              <div className="item-set padding-set" key={item.id + (item && item?.name ? item.name : "")}>
                 <div className="item-name-box" onClick={() => selectFolder(item)}>
                   <i className="far fa-folder folder-icon" aria-hidden="true"></i>
                   <li className="item">{item.name} </li>
@@ -39,9 +39,15 @@ function FolderList({
                 )}
               </div>
             ))
-          ) : !folderHasItems? (
-            <p>Folder is Empty</p>
-          ): (null)}
+          ) : !folderHasItems ? (
+            <div className="flex-row">
+              <p>Folder is Empty</p>
+              <div id="add-folder-button" onClick={() => setShowAddFolder(!showAddFolder)}>
+                <i className="far fa-folder" aria-hidden="true"></i>
+                <span>+</span>
+              </div>
+            </div>
+          ) : null}
         </ol>
       </div>
       {showAddFolder && (
