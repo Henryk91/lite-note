@@ -12,10 +12,11 @@ function FolderList({
   showAddFolder: boolean;
   setShowAddFolder: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { addFolder, deleteItem, getFoldersByParentId } = useItem.useContainer();
+  const { addFolder, deleteItem, getFoldersByParentId, checkFolderHasItems } = useItem.useContainer();
   let { selectedFolder, selectFolder } = useSelectedFolder.useContainer();
   const [localItem, setLocalItem] = useState("");
   const folderItems = getFoldersByParentId(selectedFolder ? selectedFolder.id : "")
+  const folderHasItems = checkFolderHasItems(selectedFolder ? selectedFolder.id : "")
 
   return (
     <>
@@ -38,9 +39,9 @@ function FolderList({
                 )}
               </div>
             ))
-          ) : (
+          ) : !folderHasItems? (
             <p>Folder is Empty</p>
-          )}
+          ): (null)}
         </ol>
       </div>
       {showAddFolder && (

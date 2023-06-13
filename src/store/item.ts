@@ -35,7 +35,10 @@ function useItem(initialState = []) {
   let getFoldersByParentId = (parentId: string) => {
     return items?.filter((item) => item?.parentId === parentId && item.type === "FOLDER");
   };
-  return { items, addItem,addFolder, updateNoteItem, deleteItem, getItemsByParent, getFoldersByParentId };
+  let checkFolderHasItems = (parentId: string) => {
+    return items?.filter((item) => item?.parentId === parentId)?.length > 0
+  };
+  return { items, addItem,addFolder, updateNoteItem, deleteItem, getItemsByParent, getFoldersByParentId, checkFolderHasItems };
 }
 
 export default createContainer(useItem);
