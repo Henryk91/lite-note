@@ -24,8 +24,11 @@ function FolderList({
       <div className="items-wrap">
         <ol className="items">
           {folderItems.length > 0 ? (
-            folderItems.map((item) => (
-              <div className="item-set padding-set" key={item.id + (item && item?.name ? item.name : "")}>
+            folderItems.map((item, index) => (
+              <div
+                className="item-set padding-set"
+                key={item.parentId + item.id + (item && item?.name ? item.name : "") + index}
+              >
                 <div className="item-name-box" onClick={() => selectFolder(item)}>
                   <i className="far fa-folder folder-icon" aria-hidden="true"></i>
                   <li className="item">{item.name} </li>
