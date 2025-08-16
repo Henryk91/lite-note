@@ -7,7 +7,6 @@ const checkLogin = () => {
   if (!userId) {
     const url = new URL(window.location.href);
     const userId = url.searchParams.get("userId");
-    console.log("userId", userId);
     if (userId) {
       localStorage.setItem("userId", userId);
       url.searchParams.delete("userId");
