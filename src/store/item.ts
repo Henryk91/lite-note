@@ -6,7 +6,8 @@ import { getAllNotes } from "../helpers/requests";
 let called = false;
 function useItem(initialState = []) {
   useEffect(() => {
-    if (!called) {
+    const userId = localStorage.getItem("userId");
+    if (!called && userId) {
       let createdByList: string[] = [];
       let newFolders: NoteItem[] = [];
       let newNotes: NoteItem[] = [];

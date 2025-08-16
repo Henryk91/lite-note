@@ -21,6 +21,7 @@ export function logoutUser(next) {
 }
 
 async function refreshToken() {
+  if (localStorage.getItem("userId")) return;
   const res = await fetch(`${serverUrl}/api/refresh`, {
     method: "POST",
     headers: {
