@@ -78,8 +78,8 @@ function Item({
       <div className="note-list">
         {folderItems.length > 0 &&
           folderItems.map((item) => (
-            <div className="item-set" key={item.id + item.parentId}>
-              <div onClick={() => updateItem(item)}>
+            <div className="item-set" key={item.id + item.parentId} onClick={() => updateItem(item)}>
+              <div>
                 <p>{item.content} </p>
               </div>
               {showEditButton && (
