@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createContainer } from "unstated-next";
 import { ItemType, NoteItem, NoteItemMap } from "../types/item";
 import { createNoteV2, deleteNoteV2, getAllNotesV2, updateNoteV2 } from "../helpers/requests";
-import { generateDocId, noteItemChanged, sortNoteItemsByDateDesc } from "../utils";
+import { generateDocId, noteItemChanged, sortNoteItemsByDateAsc } from "../utils";
 
 let called = false;
 function useItem(initialState: NoteItemMap = { "": [] }) {
@@ -108,7 +108,7 @@ function useItem(initialState: NoteItemMap = { "": [] }) {
     }
     getAllNotesV2(_item.id, (data: any) => {
       setItem((oldItems: NoteItemMap) => {
-        oldItems[_item.id] = data?.[0].type === "NOTE" ? sortNoteItemsByDateDesc(data) : data;
+        oldItems[_item.id] = data?.[0].type === "LOG" ? sortNoteItemsByDateAsc(data) : data;
         return oldItems;
       });
 

@@ -174,10 +174,10 @@ export function getLogDuration(currentDate: string, nextDate?: string) {
   return duration;
 }
 
-export function sortNoteItemsByDateDesc(items: NoteItem[]): NoteItem[] {
+export function sortNoteItemsByDateAsc(items: NoteItem[]): NoteItem[] {
   return [...items].sort((a, b) => {
     const dateA = a.content?.date ? new Date(a.content.date).getTime() : 0;
     const dateB = b.content?.date ? new Date(b.content.date).getTime() : 0;
-    return dateB - dateA;
+    return dateA - dateB;
   });
 }
