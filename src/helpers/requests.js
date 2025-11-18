@@ -21,7 +21,7 @@ export function logoutUser(next) {
 }
 
 async function refreshToken() {
-  if (localStorage.getItem("userId")) return;
+  if (!localStorage.getItem("userId")) return;
   const res = await fetch(`${serverUrl}/api/refresh`, {
     method: "POST",
     headers: {
@@ -69,6 +69,70 @@ export function getAllNotes(next) {
   apiFetch("/api/note?user=all")
     .then((res) => res?.json())
     .then((data) => next(data))
+    .catch((error) => {
+      console.log("Error:", error);
+      next(error);
+    });
+}
+
+export function getAllNotesV2(parentId, next) {
+  apiFetch("/api/note-v2" + (parentId && parentId !== "" ? `?parentId=${parentId}` : ""))
+    .then((res) => res?.json())
+    .then((data) => next(data))
+    .catch((error) => {
+      console.log("Error:", error);
+      next(error);
+    });
+}
+
+export function createNoteV2(newNote, next) {
+  apiFetch("/api/note-v2", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newNote),
+  })
+    .then((res) => res?.json())
+    .then((data) => {
+      next(data);
+    })
+    .catch((error) => {
+      console.log("Error:", error);
+      next(error);
+    });
+}
+
+export function updateNoteV2(newNote, next) {
+  apiFetch("/api/note-v2", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newNote),
+  })
+    .then((res) => res?.json())
+    .then((data) => {
+      next(data);
+    })
+    .catch((error) => {
+      console.log("Error:", error);
+      next(error);
+    });
+}
+
+export function deleteNoteV2(note, next) {
+  apiFetch("/api/note-v2", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(note),
+  })
+    .then((res) => res?.json())
+    .then((data) => {
+      next(data);
+    })
     .catch((error) => {
       console.log("Error:", error);
       next(error);

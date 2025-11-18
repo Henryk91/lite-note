@@ -1,9 +1,22 @@
-type NoteItem = {
-    id: string
-    type: "FOLDER" | "NOTE"
-    name?: string,
-    content?: string,
-    parentId: string,
+type NoteContent = {
+  date?: string;
+  data: string;
+};
+
+export enum ItemType {
+  FOLDER = "FOLDER",
+  NOTE = "NOTE",
+  LOG = "LOG",
 }
 
-export type {NoteItem}
+export type NoteItem = {
+  id: string;
+  type: ItemType;
+  name?: string;
+  content?: NoteContent;
+  parentId: string;
+};
+
+export type NoteItemMap = {
+  [key: string]: NoteItem[];
+};

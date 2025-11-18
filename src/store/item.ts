@@ -1,113 +1,119 @@
 import { useEffect, useState } from "react";
 import { createContainer } from "unstated-next";
-import { NoteItem } from "../types/item";
-import { getAllNotes } from "../helpers/requests";
+import { ItemType, NoteItem, NoteItemMap } from "../types/item";
+import { createNoteV2, deleteNoteV2, getAllNotesV2, updateNoteV2 } from "../helpers/requests";
+import { generateDocId, noteItemChanged } from "../utils";
 
 let called = false;
-function useItem(initialState = []) {
+function useItem(initialState: NoteItemMap = { "": [] }) {
   useEffect(() => {
     const userId = localStorage.getItem("userId");
+
     if (!called && userId) {
-      let createdByList: string[] = [];
-      let newFolders: NoteItem[] = [];
-      let newNotes: NoteItem[] = [];
-      getAllNotes((data: any) => {
-        data?.forEach((item: any) => {
-          if (!createdByList.includes(item.createdBy)) {
-            const mainFolder: NoteItem = {
-              id: item.createdBy,
-              name: item.createdBy,
-              parentId: "",
-              type: "FOLDER",
-            };
-            newFolders.push(mainFolder);
-            createdByList.push(item.createdBy);
-          }
-
-          if (!item.heading?.startsWith("Sub: ")) {
-            const subFolder: NoteItem = {
-              id: item.id,
-              name: item.heading === "" ? "Unnamed" : item.heading,
-              parentId: item.createdBy,
-              type: "FOLDER",
-            };
-            newFolders.push(subFolder);
-          }
-
-          let subSubFolderNames: string[] = [];
-          item?.dataLable.forEach((label: any) => {
-            const subSubFolderId = (item.id + label.tag).replaceAll(" ", "-");
-            if (!subSubFolderNames.includes(label.tag)) {
-              subSubFolderNames.push(label.tag);
-              const subSubFolder: NoteItem = {
-                id: label.data.startsWith("href:") ? label.data.replace("href:", "") : subSubFolderId,
-                name: label.tag === "" || !label.tag ? "Unnamed" : label.tag,
-                parentId: item.id,
-                type: "FOLDER",
-              };
-              newFolders.push(subSubFolder);
-            }
-
-            const newNote: NoteItem = {
-              id: subSubFolderId + "NOTE" + newNotes.length.toString(),
-              content: label.data,
-              parentId: subSubFolderId,
-              type: "NOTE",
-            };
-
-            if (!label.data.startsWith("href:")) {
-              newNotes.push(newNote);
-            }
-          });
-        });
-        if (newFolders?.length) {
-          setItem([...newFolders, ...newNotes]);
-        }
+      getAllNotesV2(undefined, (data: any) => {
+        setItem({ "": data });
       });
-
       called = true;
     }
   }, []);
 
-  let [items, setItem] = useState<NoteItem[]>(initialState);
-  let addItem = (_item: string, _parentId: string) => {
+  let [items, setItem] = useState<NoteItemMap>(initialState);
+  let addItem = (_item: string, _parentId: string, done: () => void) => {
     if (_item === "") return;
-    let newItem: NoteItem = { id: items.length.toString(), content: _item, parentId: _parentId, type: "NOTE" };
-    setItem([...items, newItem]);
+
+    let newItem: NoteItem = {
+      id: generateDocId(),
+      content: { data: _item },
+      parentId: _parentId,
+      type: ItemType.NOTE,
+    };
+
+    createNoteV2(newItem, () => {
+      setItem((oldItems: NoteItemMap) => {
+        oldItems[_parentId]?.push(newItem);
+        return oldItems;
+      });
+      done();
+    });
   };
-  let addFolder = (_item: { name: string; parent: string; folderId?: string }) => {
+  let addFolder = (_item: { name: string; parent: string; folderId?: string }, done: () => void) => {
     if (_item.name === "") return;
     let newItem: NoteItem = {
-      id: _item.folderId ?? items.length.toString(),
+      id: generateDocId(),
       name: _item.name,
       parentId: _item.parent,
-      type: "FOLDER",
+      type: ItemType.FOLDER,
     };
-    setItem([...items, newItem]);
+
+    createNoteV2(newItem, () => {
+      setItem((oldItems: NoteItemMap) => {
+        oldItems[_item.parent]?.push(newItem);
+        return oldItems;
+      });
+      done();
+    });
   };
-  let updateNoteItem = (_item: NoteItem) => {
-    if (_item?.id && _item.content === "") {
-      let newItems: NoteItem[] = items.filter((i) => i.id !== _item.id);
-      setItem(newItems);
+  let updateNoteItem = (_item: NoteItem, done: () => void) => {
+    if (_item?.id && _item?.content?.data === "") {
+      let newItems: NoteItem[] = items[_item.parentId].filter((i) => i.id !== _item.id);
+      updateNoteV2(_item, (data: any) => {
+        setItem((oldItems: NoteItemMap) => {
+          oldItems[_item.parentId] = newItems;
+          return oldItems;
+        });
+        done();
+      });
     } else {
-      const itemIndex: number = items.findIndex((item) => item.id === _item.id);
-      let newItems: NoteItem[] = [...items];
-      newItems[itemIndex] = _item;
-      setItem(newItems);
+      const itemIndex: number = items[_item.parentId].findIndex((item) => item.id === _item.id);
+      const oldItem = items[_item.parentId][itemIndex];
+
+      if (noteItemChanged(oldItem, _item)) {
+        updateNoteV2(_item, () => {
+          setItem((oldItems: NoteItemMap) => {
+            oldItems[_item.parentId][itemIndex] = _item;
+            return oldItems;
+          });
+          done();
+        });
+      } else {
+        done();
+      }
     }
   };
   let deleteItem = (_item: NoteItem) => {
-    let newItems: NoteItem[] = items.filter((item) => item !== _item);
-    setItem(newItems);
+    let newItems: NoteItem[] = items[_item.parentId].filter((item) => item !== _item);
+    items[_item.parentId] = newItems;
+
+    deleteNoteV2(_item, () => {
+      setItem((oldItems: NoteItemMap) => {
+        oldItems[_item.id] = newItems;
+        return oldItems;
+      });
+    });
   };
-  let getItemsByParent = (parentId: string) => {
-    return items?.filter((item) => item?.parentId === parentId && item.type === "NOTE");
+  let getItemsByParent = (parentId: string | undefined) => {
+    return items[parentId ?? ""]?.filter((item) => item.type === "NOTE" || item.type === "LOG");
   };
   let getFoldersByParentId = (parentId: string) => {
-    return items?.filter((item) => item?.parentId === parentId && item.type === "FOLDER");
+    return items[parentId]?.filter((item) => item.type === "FOLDER");
   };
   let checkFolderHasItems = (parentId: string) => {
-    return items?.filter((item) => item?.parentId === parentId)?.length > 0;
+    return items[parentId]?.filter((item) => item?.parentId === parentId)?.length > 0;
+  };
+
+  let getFolderContents = (_item: NoteItem, done: () => void) => {
+    if (items[_item.id]) {
+      done();
+      return;
+    }
+    getAllNotesV2(_item.id, (data: any) => {
+      setItem((oldItems: NoteItemMap) => {
+        oldItems[_item.id] = data;
+        return oldItems;
+      });
+
+      done();
+    });
   };
   return {
     items,
@@ -118,6 +124,7 @@ function useItem(initialState = []) {
     getItemsByParent,
     getFoldersByParentId,
     checkFolderHasItems,
+    getFolderContents,
   };
 }
 

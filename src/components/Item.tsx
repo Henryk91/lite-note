@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./item.css";
 import useItem from "../store/item";
 import useSelectedFolder from "../store/selectedFolder";
@@ -17,29 +17,54 @@ function Item({
   let { selectedFolder } = useSelectedFolder.useContainer();
   const [localItem, setLocalItem] = useState("");
   const [updatingNote, setUpdatingNote] = useState<NoteItem>();
-
-  let folderItems = getItemsByParent(selectedFolder?.id);
+  const [notes, setNotes] = useState<NoteItem[]>(getItemsByParent(selectedFolder?.id));
 
   const addNewItem = (localItem: string, parentId: string) => {
     if (updatingNote && updatingNote.id !== undefined) {
       let item: NoteItem = { ...updatingNote } as NoteItem;
-      item.content = localItem;
-      updateNoteItem(item);
-      setUpdatingNote(undefined);
+      item.content = { data: localItem };
+      updateNoteItem(item, () => {
+        setUpdatingNote(undefined);
+        setNotes(getItemsByParent(selectedFolder?.id));
+      });
     } else {
-      addItem(localItem, parentId);
+      addItem(localItem, parentId, () => {
+        setNotes(getItemsByParent(selectedFolder?.id));
+      });
     }
-
     setLocalItem("");
   };
 
   const updateItem = (item: NoteItem) => {
     if (item.content) {
-      setLocalItem(item.content);
+      setLocalItem(item.content.data);
       setShowAddNote(!showAddNote);
       setUpdatingNote(item);
+      setNotes(getItemsByParent(selectedFolder?.id));
     }
   };
+
+  const deleteClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: NoteItem) => {
+    e.stopPropagation();
+    deleteItem(item);
+    setNotes(getItemsByParent(selectedFolder?.id));
+  };
+
+  useEffect(() => {
+    setNotes(getItemsByParent(selectedFolder?.id));
+  }, [selectedFolder?.id, getItemsByParent]);
+
+  useEffect(() => {
+    if (!showAddNote) {
+      setLocalItem("");
+      return;
+    }
+    const ta = document.getElementById("new-note-item") as HTMLTextAreaElement;
+    if (ta) {
+      ta?.focus();
+      ta.setSelectionRange(ta.value.length, ta.value.length);
+    }
+  }, [showAddNote]);
 
   return (
     <>
@@ -66,7 +91,6 @@ function Item({
             />
           </div>
           <textarea
-            autoFocus
             id="new-note-item"
             placeholder="New Note"
             value={localItem}
@@ -76,14 +100,15 @@ function Item({
       )}
 
       <div className="note-list">
-        {folderItems.length > 0 &&
-          folderItems.map((item) => (
+        {notes &&
+          notes.length > 0 &&
+          notes.map((item) => (
             <div className="item-set" key={item.id + item.parentId} onClick={() => updateItem(item)}>
               <div>
-                <p>{item.content} </p>
+                <p>{item.content?.data}</p>
               </div>
               {showEditButton && (
-                <button className="deleteButton" onClick={() => deleteItem(item)}>
+                <button className="deleteButton" onClick={(e) => deleteClick(e, item)}>
                   Delete
                 </button>
               )}
