@@ -56,9 +56,11 @@ export function processGetAllNotes(data: any) {
   let createdByList: string[] = [];
   let newFolders: NoteItem[] = [];
   let newNotes: NoteItem[] = [];
+  const userId = localStorage.getItem("userId") ?? "";
   data?.forEach((item: any) => {
     if (!createdByList.includes(item.createdBy)) {
       const mainFolder: NoteItem = {
+        userId,
         id: item.createdBy,
         name: item.createdBy,
         parentId: "",
@@ -70,6 +72,7 @@ export function processGetAllNotes(data: any) {
 
     if (!item.heading?.startsWith("Sub: ")) {
       const subFolder: NoteItem = {
+        userId,
         id: item.id,
         name: item.heading === "" ? "Unnamed" : item.heading,
         parentId: item.createdBy,
@@ -84,6 +87,7 @@ export function processGetAllNotes(data: any) {
       if (!subSubFolderNames.includes(label.tag)) {
         subSubFolderNames.push(label.tag);
         const subSubFolder: NoteItem = {
+          userId,
           id: label.data.startsWith("href:") ? label.data.replace("href:", "") : subSubFolderId,
           name: label.tag === "" || !label.tag ? "Unnamed" : label.tag,
           parentId: item.id,
@@ -104,6 +108,7 @@ export function processGetAllNotes(data: any) {
         const logDayId = (subSubFolderId + "::" + logDay).trim().replaceAll(" ", "-");
 
         logDays[logDayId] = {
+          userId,
           id: logDayId,
           name: logDay,
           parentId: subSubFolderId,
@@ -113,16 +118,12 @@ export function processGetAllNotes(data: any) {
         parentId = logDayId;
       }
       const newNote: NoteItem = {
+        userId,
         id: parentId + "::" + noteType + "::" + newNotes.length.toString(),
         content: content,
         parentId: parentId,
         type: noteType,
       };
-      if (parentId.includes("::Mon-Jan-20-2025")) {
-        console.log("logDays[logDay]", logDays[parentId]);
-        console.log("newNote", newNote);
-      }
-
       // logDays
       if (!label.data.startsWith("href:")) {
         newNotes.push(newNote);
@@ -134,8 +135,6 @@ export function processGetAllNotes(data: any) {
 
     const sortedLogDayFolders = logDayFolders.sort((a, b) => (b?.name ?? "").localeCompare(a?.name ?? ""));
     const itemsToSet = [...newFolders, ...newNotes, ...sortedLogDayFolders];
-    console.log("itemsToSet", itemsToSet);
-    // setItem(itemsToSet);
     return itemsToSet;
   }
   return [];

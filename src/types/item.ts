@@ -10,6 +10,7 @@ export enum ItemType {
 }
 
 export type NoteItem = {
+  userId?: string;
   id: string;
   type: ItemType;
   name?: string;
