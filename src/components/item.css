@@ -1,52 +1,67 @@
-.note-list{
-    flex-direction: column;
-    background: rgb(28,27,29);
-    margin-left: 5%;
-    margin-right: 5%;
-    border-radius: 8px;
-    overflow: scroll;
+.note-list {
+  flex-direction: column;
+  background: rgb(28, 27, 29);
+  margin-left: 5%;
+  margin-right: 5%;
+  border-radius: 8px;
+  overflow: scroll;
 }
-#new-note-item{
-	background-color: unset;
-	width: 90%;
-	height: 85%;
-    margin-top: 20px;
-    border: none;
-    color: white;
-    font-size: 25px;
-    border-radius: 5px;
-    padding: 10px;
-    font-family: inherit;
+#log-date {
+  background-color: unset;
+  width: 90%;
+  margin-top: 20px;
+  border: none;
+  border: 1px solid rgb(227, 177, 60);
+  color: white;
+  font-size: 15px;
+  border-radius: 5px;
+  padding: 10px;
+  font-family: inherit;
+}
+#new-note-item {
+  background-color: unset;
+  width: 90%;
+  height: 85%;
+  margin-top: 20px;
+  border: none;
+  color: white;
+  font-size: 25px;
+  border-radius: 5px;
+  padding: 10px;
+  font-family: inherit;
 }
 #new-note-item:focus {
-    outline: none;
+  outline: none;
 }
-.note-item{
-    margin-right: 12px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+#log-date:focus {
+  outline: none;
 }
-#add-note-button{
-    float: right;
-    display: flex;
-    margin-right: 45px;
-    background-color: unset;
-    color: rgb(227, 177, 60);
-    font-size: 25px;
-    justify-content: space-between;
-    align-items: center;
+.note-item {
+  margin-right: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-#add-note-button:hover{
-    color: rgba(227, 177, 60, 0.6);
+#add-note-button {
+  float: right;
+  display: flex;
+  margin-right: 45px;
+  background-color: unset;
+  color: rgb(227, 177, 60);
+  font-size: 25px;
+  justify-content: space-between;
+  align-items: center;
 }
-.bottom-nav{
-    position: absolute;
-    bottom: 40px;
-    width: 100vw;
+#add-note-button:hover {
+  color: rgba(227, 177, 60, 0.6);
+}
+.bottom-nav {
+  position: absolute;
+  bottom: 40px;
+  width: 100vw;
 }
 @media only screen and (min-width: 600px) {
-	.bottom-nav{
-		width: 60vw;
-	}
+  .bottom-nav {
+    width: 60vw;
+  }
 }

@@ -17,6 +17,7 @@ function Item({
   const { addItem, updateNoteItem, deleteItem, getItemsByParent } = useItem.useContainer();
   let { selectedFolder } = useSelectedFolder.useContainer();
   const [localItem, setLocalItem] = useState("");
+  const [localItemDate, setLocalItemDate] = useState("");
   const [updatingNote, setUpdatingNote] = useState<NoteItem>();
   const [notes, setNotes] = useState<NoteItem[]>(getItemsByParent(selectedFolder?.id));
 
@@ -24,6 +25,7 @@ function Item({
     if (updatingNote && updatingNote.id !== undefined) {
       let item: NoteItem = { ...updatingNote } as NoteItem;
       item.content = { data: localItem };
+      if (localItemDate && localItemDate !== "") item.content.date = localItemDate;
       updateNoteItem(item, () => {
         setUpdatingNote(undefined);
         setNotes(getItemsByParent(selectedFolder?.id));
@@ -39,6 +41,7 @@ function Item({
   const updateItem = (item: NoteItem) => {
     if (item.content) {
       setLocalItem(item.content.data);
+      if (item.content.date) setLocalItemDate(item.content.date);
       setShowAddNote(!showAddNote);
       setUpdatingNote(item);
       setNotes(getItemsByParent(selectedFolder?.id));
@@ -58,6 +61,7 @@ function Item({
   useEffect(() => {
     if (!showAddNote) {
       setLocalItem("");
+      setLocalItemDate("");
       return;
     }
     const ta = document.getElementById("new-note-item") as HTMLTextAreaElement;
@@ -91,6 +95,9 @@ function Item({
               }}
             />
           </div>
+          {updatingNote?.type === "LOG" && (
+            <input id="log-date" value={localItemDate} onChange={(e) => setLocalItemDate(e.target.value)}></input>
+          )}
           <textarea
             id="new-note-item"
             placeholder="New Note"
