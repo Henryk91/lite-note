@@ -160,7 +160,7 @@ export function getNote(user, noteHeading, next) {
 }
 
 export function loginRequest(note, next) {
-  fetch("/api/login", {
+  fetch(`${serverUrl}/api/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
