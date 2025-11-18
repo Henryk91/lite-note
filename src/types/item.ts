@@ -1,4 +1,4 @@
-type NoteContent = {
+export type NoteContent = {
   date?: string;
   data: string;
 };

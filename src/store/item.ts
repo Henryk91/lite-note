@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createContainer } from "unstated-next";
-import { ItemType, NoteItem, NoteItemMap } from "../types/item";
+import { ItemType, NoteContent, NoteItem, NoteItemMap } from "../types/item";
 import { createNoteV2, deleteNoteV2, getAllNotesV2, updateNoteV2 } from "../helpers/requests";
 import { generateDocId, noteItemChanged, sortNoteItemsByDateAsc } from "../utils";
 
@@ -18,14 +18,14 @@ function useItem(initialState: NoteItemMap = { "": [] }) {
   }, []);
 
   let [items, setItem] = useState<NoteItemMap>(initialState);
-  let addItem = (_item: string, _parentId: string, done: () => void) => {
-    if (_item === "") return;
+  let addItem = (_content: NoteContent, _parentId: string, done: () => void) => {
+    if (_content.data === "") return;
 
     let newItem: NoteItem = {
       id: generateDocId(),
-      content: { data: _item },
+      content: _content,
       parentId: _parentId,
-      type: ItemType.NOTE,
+      type: _content.date ? ItemType.LOG : ItemType.NOTE,
     };
 
     createNoteV2(newItem, () => {

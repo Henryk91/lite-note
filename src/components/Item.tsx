@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./item.css";
 import useItem from "../store/item";
 import useSelectedFolder from "../store/selectedFolder";
-import { NoteItem } from "../types/item";
+import { NoteContent, NoteItem } from "../types/item";
 import { getLogDuration } from "../utils";
 
 function Item({
@@ -31,11 +31,22 @@ function Item({
         setNotes(getItemsByParent(selectedFolder?.id));
       });
     } else {
-      addItem(localItem, parentId, () => {
+      const content: NoteContent = { data: localItem };
+      if (localItemDate && localItemDate !== "") content.date = localItemDate;
+      addItem(content, parentId, () => {
         setNotes(getItemsByParent(selectedFolder?.id));
       });
     }
     setLocalItem("");
+    setLocalItemDate("");
+  };
+
+  const addLogClick = () => {
+    if (localItemDate) {
+      setLocalItemDate("");
+      return;
+    }
+    setLocalItemDate(new Date() + "");
   };
 
   const updateItem = (item: NoteItem) => {
@@ -87,6 +98,14 @@ function Item({
             <input
               type="button"
               id="done-button"
+              value="Log"
+              onClick={() => {
+                addLogClick();
+              }}
+            />
+            <input
+              type="button"
+              id="done-button"
               value="Done"
               onClick={() => {
                 addNewItem(localItem, selectedFolder.id);
@@ -95,9 +114,10 @@ function Item({
               }}
             />
           </div>
-          {updatingNote?.type === "LOG" && (
-            <input id="log-date" value={localItemDate} onChange={(e) => setLocalItemDate(e.target.value)}></input>
-          )}
+          {updatingNote?.type === "LOG" ||
+            (localItemDate !== "" && (
+              <input id="log-date" value={localItemDate} onChange={(e) => setLocalItemDate(e.target.value)}></input>
+            ))}
           <textarea
             id="new-note-item"
             placeholder="New Note"
