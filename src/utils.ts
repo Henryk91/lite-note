@@ -140,3 +140,45 @@ export function processGetAllNotes(data: any) {
   }
   return [];
 }
+
+const checkIsToday = (dateString: string) => {
+  const today = new Date();
+  const someDate = new Date(dateString);
+  return (
+    someDate.getDate() === today.getDate() &&
+    someDate.getMonth() === today.getMonth() &&
+    someDate.getFullYear() === today.getFullYear()
+  );
+};
+
+export function getLogDuration(currentDate: string, nextDate?: string) {
+  const getTimeDifference = (start: string, end: string) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const duration = endDate.getTime() - startDate.getTime();
+    let minutes = Math.floor((duration / (1000 * 60)) % 60);
+    let hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+    let hoursString = hours < 10 ? "0" + hours : hours;
+    let minutesString = minutes < 10 ? "0" + minutes : minutes;
+
+    return hoursString + ":" + minutesString;
+  };
+
+  if (!nextDate) {
+    if (checkIsToday(currentDate)) {
+      nextDate = new Date() + "";
+    }
+  }
+
+  const duration = nextDate ? "(" + getTimeDifference(currentDate, nextDate) + ")" : "";
+  return duration;
+}
+
+export function sortNoteItemsByDateDesc(items: NoteItem[]): NoteItem[] {
+  return [...items].sort((a, b) => {
+    const dateA = a.content?.date ? new Date(a.content.date).getTime() : 0;
+    const dateB = b.content?.date ? new Date(b.content.date).getTime() : 0;
+    return dateB - dateA;
+  });
+}

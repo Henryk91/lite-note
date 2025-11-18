@@ -3,6 +3,7 @@ import "./item.css";
 import useItem from "../store/item";
 import useSelectedFolder from "../store/selectedFolder";
 import { NoteItem } from "../types/item";
+import { getLogDuration } from "../utils";
 
 function Item({
   showEditButton,
@@ -102,9 +103,18 @@ function Item({
       <div className="note-list">
         {notes &&
           notes.length > 0 &&
-          notes.map((item) => (
+          notes.map((item, i) => (
             <div className="item-set" key={item.id + item.parentId} onClick={() => updateItem(item)}>
-              <div>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {item.content?.date && (
+                  <div style={{ display: "flex", flexDirection: "row", marginTop: "1em" }}>
+                    <span>
+                      {item.content?.date.substring(0, item.content?.date.indexOf("GMT")).trim() +
+                        " " +
+                        getLogDuration(item.content?.date, notes?.[i + 1]?.content?.date)}
+                    </span>
+                  </div>
+                )}
                 <p>{item.content?.data}</p>
               </div>
               {showEditButton && (
