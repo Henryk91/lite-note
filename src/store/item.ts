@@ -16,10 +16,12 @@ function useItem(initialState: NoteItemMap = { "": [] }) {
         return;
       }
       getAllNotesV2(_item.id, (data: any) => {
-        setItem((oldItems: NoteItemMap) => {
-          oldItems[_item.id] = data?.[0].type === "LOG" ? sortNoteItemsByDateAsc(data) : data;
-          return oldItems;
-        });
+        if (data?.[0]) {
+          setItem((oldItems: NoteItemMap) => {
+            oldItems[_item.id] = data?.[0]?.type === "LOG" ? sortNoteItemsByDateAsc(data) : data;
+            return oldItems;
+          });
+        }
 
         done();
       });
@@ -32,7 +34,7 @@ function useItem(initialState: NoteItemMap = { "": [] }) {
 
     if (!called && userId) {
       getAllNotesV2(undefined, (data: any) => {
-        setItem({ "": data });
+        if (data?.[0]) setItem({ "": data });
       });
       called = true;
 
