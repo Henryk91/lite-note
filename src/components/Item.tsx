@@ -65,9 +65,10 @@ function Item({
     setNotes(getItemsByParent(selectedFolder?.id));
   };
 
+  const parentItems = getItemsByParent(selectedFolder?.id);
   useEffect(() => {
-    setNotes(getItemsByParent(selectedFolder?.id));
-  }, [selectedFolder?.id, getItemsByParent]);
+    if (notes?.[0] !== parentItems?.[0]) setNotes(parentItems);
+  }, [parentItems?.length, parentItems, notes]);
 
   useEffect(() => {
     if (!showAddNote) {

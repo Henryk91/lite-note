@@ -62,9 +62,11 @@ function FolderList({
     setShowAddFolder(!showAddFolder);
   };
 
+  const folderContent = getFoldersByParentId(selectedFolder?.id ? selectedFolder.id : "");
+
   useEffect(() => {
-    setFolders(getFoldersByParentId(selectedFolder?.id ? selectedFolder.id : ""));
-  }, [getFoldersByParentId, selectedFolder?.id]);
+    if (folderContent?.[0] !== folders?.[0]) setFolders(folderContent);
+  }, [folderContent?.length, folderContent, folders]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createContainer } from "unstated-next";
 import { ItemType, NoteContent, NoteItem, NoteItemMap } from "../types/item";
 import { createNoteV2, deleteNoteV2, getAllNotesV2, updateNoteV2 } from "../helpers/requests";
@@ -6,6 +6,27 @@ import { generateDocId, noteItemChanged, sortNoteItemsByDateAsc } from "../utils
 
 let called = false;
 function useItem(initialState: NoteItemMap = { "": [] }) {
+  let [items, setItem] = useState<NoteItemMap>(initialState);
+  let [stateLoaded, setStateLoaded] = useState<boolean>(false);
+
+  let getFolderContents = useCallback(
+    (_item: NoteItem, done: () => void) => {
+      if (items[_item.id]) {
+        done();
+        return;
+      }
+      getAllNotesV2(_item.id, (data: any) => {
+        setItem((oldItems: NoteItemMap) => {
+          oldItems[_item.id] = data?.[0].type === "LOG" ? sortNoteItemsByDateAsc(data) : data;
+          return oldItems;
+        });
+
+        done();
+      });
+    },
+    [items, setItem]
+  );
+
   useEffect(() => {
     const userId = localStorage.getItem("userId");
 
@@ -14,10 +35,29 @@ function useItem(initialState: NoteItemMap = { "": [] }) {
         setItem({ "": data });
       });
       called = true;
-    }
-  }, []);
 
-  let [items, setItem] = useState<NoteItemMap>(initialState);
+      const localFolders = localStorage.getItem("selected-folders");
+      const foldersToGet = localFolders ? JSON.parse(localFolders) : [];
+      const localFolder = localStorage.getItem("selected-folder");
+      if (localFolder && localFolder !== "undefined") foldersToGet.push(JSON.parse(localFolder));
+
+      if (foldersToGet && foldersToGet.length > 0) {
+        let count = 0;
+        foldersToGet.forEach((folder: NoteItem) =>
+          getFolderContents(folder, () => {
+            count++;
+            if (count === foldersToGet.length) {
+              console.log("State load completed!");
+              setStateLoaded(true);
+            }
+          })
+        );
+      } else {
+        setStateLoaded(true);
+      }
+    }
+  }, [getFolderContents]);
+
   let addItem = (_content: NoteContent, _parentId: string, done: () => void) => {
     if (_content.data === "") return;
 
@@ -101,21 +141,8 @@ function useItem(initialState: NoteItemMap = { "": [] }) {
     return items[parentId]?.filter((item) => item?.parentId === parentId)?.length > 0;
   };
 
-  let getFolderContents = (_item: NoteItem, done: () => void) => {
-    if (items[_item.id]) {
-      done();
-      return;
-    }
-    getAllNotesV2(_item.id, (data: any) => {
-      setItem((oldItems: NoteItemMap) => {
-        oldItems[_item.id] = data?.[0].type === "LOG" ? sortNoteItemsByDateAsc(data) : data;
-        return oldItems;
-      });
-
-      done();
-    });
-  };
   return {
+    stateLoaded,
     items,
     addItem,
     addFolder,
