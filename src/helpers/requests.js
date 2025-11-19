@@ -81,7 +81,7 @@ export function getAllNotesV2(parentId, next) {
     .then((data) => next(data))
     .catch((error) => {
       console.log("Error:", error);
-      next(error);
+      next({});
     });
 }
 
